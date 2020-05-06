@@ -28,11 +28,13 @@ namespace TcTagPrint
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var ps = new ProductServiceTag();
+            //var ps = new ProductServiceTag();
 
             var print = new PrintServiceTag();
 
-            print.ReadExcelFile(@"C:\TEMP\TAGS - 450-0071C-20.xlsx");
+            //print.ReadExcelFile(@"C:\TEMP\TAGS-STRICT.xlsx");
+
+            print.CreateTags(@"C:\TEMP\TAGS-test.xml");
 
         }
     }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -14,106 +15,106 @@ using TcTagPrint.Model;
 
 namespace TcTagPrint.Service
 {
+    /// <summary>
+    /// Classe de Serviço de gerenciamento de carregamento dos dados e impressão
+    /// </summary>
     public class PrintServiceTag
     {
+        /// <summary>
+        /// Lista de Tags
+        /// </summary>
         private readonly ProductServiceTag productServiceTag;
 
+        /// <summary>
+        /// Construtor
+        /// </summary>
         public PrintServiceTag()
         {
             productServiceTag = new ProductServiceTag();
         }
 
-        public void LoadData(string dataPath)
+        /// <summary>
+        /// Cria a lista de Tags
+        /// </summary>
+        /// <param name="xmlPath"></param>
+        public void CreateTags(string xmlPath)
         {
-            ImportData(dataPath);
-        }
-
-        public void ReadExcelFile(string fileName)
-        {
-            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(fileName, false))
+            LoadList(LoadXml(xmlPath));
+            if (productServiceTag.GetTags().Count > 0)
             {
-                //WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
-                //WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
-                //SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
-                //string text;
-                //foreach (Row r in sheetData.Elements<Row>())
-                //{
-                //    foreach (Cell c in r.Elements<Cell>())
-                //    {
-                //        text = c.CellValue.Text;
-                //        Debug.Write(text + " ");
-                //    }
-                //}
-
-                WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
-                WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
-
-                OpenXmlReader reader = OpenXmlReader.Create(worksheetPart);
-                string text;
-                while (reader.Read())
-                {
-                    if (reader.ElementType == typeof(Cell))
-                    {
-                        var cell = reader.LoadCurrentElement() as Cell;
-
-                        text = cell.CellValue?.InnerText ?? "- null -";// GetText();
-                        Debug.Write(text + " ");
-                    }
-                }
+                Print(productServiceTag);
             }
         }
 
-        private void ImportData(string dataPath)
-        {
-            var contents = File.ReadAllText(dataPath).Split('\n');
-
-            ProcessData(1, contents);
-        }
-
-        public void ImportFromCmd(List<string> content)
-        {
-            ProcessData(0, content.ToArray());
-        }
-
         /// <summary>
-        /// Realiza o processamento do arquivo para impressão
+        /// Carrega o arquivo XML
         /// </summary>
-        /// <param name="headerRows"></param>
-        /// <param name="contents"></param>
-        private void ProcessData(int headerRows, string[] contents)
+        /// <param name="xmlPath"></param>
+        /// <returns></returns>
+        private XmlDocument LoadXml(string xmlPath)
         {
             try
             {
-                var csv = from line in contents select line.Split(';').ToArray();
+                var xmlDoc = new XmlDocument();
 
-                foreach (string[] row in csv.Skip(headerRows).TakeWhile(r => r.Length > 1 && r.Last().Trim().Length > 0))
+                xmlDoc.Load(xmlPath);
+
+                return xmlDoc;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao Carregar o XML", e);
+            }
+        }
+
+        /// <summary>
+        /// Lê os dados do XmlDocument.
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        private void LoadList(XmlDocument xmlDoc)
+        {
+            try
+            {
+                // Obtem o elemento ROW do XML
+                XmlNodeList nodeList = xmlDoc.GetElementsByTagName("Row");
+
+                for (var i = 1; i < nodeList.Count; i++)
                 {
-                    string textCompleto2 = string.Empty;
-                    int iii = 0;
-                    foreach (var c in contents)
+                    XmlNode node = nodeList[i];
+
+                    var tag = new ProductTag();
+
+                    try
                     {
-                        textCompleto2 = $"{textCompleto2}\n{++iii} <-> {c}";
+                        // Carrega o objeto com os dados do XML
+                        tag.Posicao = node.ChildNodes[0].InnerText;
+                        tag.Item = node.ChildNodes[1].InnerText;
+                        tag.Descricao = node.ChildNodes[2].InnerText;
+                        tag.Of = node.ChildNodes[3].InnerText;
+                        tag.Orcamento = node.ChildNodes[4].InnerText;
+                        tag.NomeDesenho = node.ChildNodes[5].InnerText;
+
+                        // Valida a quantidade
+                        var quant = node.ChildNodes[6].InnerText;
+                        if (!string.IsNullOrEmpty(quant))
+                        {
+                            tag.Quantidade = Convert.ToInt16(quant.Replace(".00", ""));
+                        }
                     }
-                    
-                    if (string.IsNullOrEmpty(row[1])) continue;
-
-                    var et = new ProductTag
+                    catch
                     {
-                        Codigo = row[0].Replace("\"", "").Trim(),
-                        Of = row[1].Replace("\"", "").Trim(),
-                        Descricao = row[2].Replace("\"", "").Trim(),
-                        Orcamento = row[3].Replace("\"", "").Trim(),
-                        NomeDesenho = row[4].Replace("\"", "").Trim(),
-                        Item = row[5].Replace("\"", "").Trim(),
-                        Posicao = row[6].Replace("\"", "").Trim(),                       
-                    };
+                        tag = null;
+                    }
 
-                    productServiceTag.AddEtiqueta(et);
+                    if (tag != null)
+                    {
+                        productServiceTag.AddTag(tag);
+                    }
                 }
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Algum erro ocorreu.\n\n{e}");
+                MessageBox.Show($"Erro ao Importar o XML\nErro:\n{e.Message}");
             }
         }
 
@@ -125,12 +126,12 @@ namespace TcTagPrint.Service
         {
             try
             {
-                var templatePath = "";
+                var templatePath = $"{Path.GetDirectoryName(System.Reflection.Assembly.GetAssembly(typeof(PrintServiceTag)).Location)}\\TagTemplate\\TagTemplate.lbx";
 
                 var doc = new DocumentClass();
                 if (doc.Open($"{templatePath}"))
                 {
-                    foreach (var productTag in productService.GetEtiquetas())
+                    foreach (var productTag in productService.GetTags())
                     {
                         doc.GetObject(TagTemplateFieldNames.TagPosicao).Text = productTag.Posicao ?? string.Empty;
                         doc.GetObject(TagTemplateFieldNames.TagItem).Text = productTag.Item ?? string.Empty;
@@ -139,12 +140,11 @@ namespace TcTagPrint.Service
                         doc.GetObject(TagTemplateFieldNames.TagOrcamento).Text = productTag.Orcamento ?? string.Empty;
                         doc.GetObject(TagTemplateFieldNames.TagNumDesenho).Text = productTag.NomeDesenho ?? string.Empty;
                         doc.GetObject(TagTemplateFieldNames.TagData).Text = DateTime.Now.ToString("MM/dd/yyyy") ?? string.Empty;
-                       
+
                         doc.StartPrint(string.Empty, PrintOptionConstants.bpoDefault);
                         doc.PrintOut(productTag.Quantidade, PrintOptionConstants.bpoDefault);
                         doc.EndPrint();
                     }
-
                     doc.Close();
                 }
                 else

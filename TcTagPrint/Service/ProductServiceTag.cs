@@ -16,14 +16,14 @@ namespace TcTagPrint.Service
                 TagItemList = new List<ProductTag>();
             }
 
-            public void AddEtiqueta(ProductTag etiqueta)
+            public void AddTag(ProductTag tag)
             {
-                if (etiqueta == null) return;
+                if (tag == null) return;
 
-                TagItemList.Add(etiqueta);
+                TagItemList.Add(tag);
             }
 
-            public List<ProductTag> GetEtiquetas()
+            public List<ProductTag> GetTags()
             {
                 return TagItemList;
             }
