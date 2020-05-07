@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace TcTagPrint.Model
 {
+    /// <summary>
+    /// Classe Static para os nomes dos campos das Tags
+    ///  * todo: Poderia ser um arquivo de configuração p/ ficar externo ao código
+    /// </summary>
     public static class TagTemplateFieldNames
     {
         public const string TagPosicao = "TagPosicao";

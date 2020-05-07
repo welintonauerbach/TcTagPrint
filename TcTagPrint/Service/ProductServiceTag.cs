@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +10,12 @@ namespace TcTagPrint.Service
 {
     public class ProductServiceTag
     {        
-            private List<ProductTag> TagItemList { get; set; }
+            private ObservableCollection<ProductTag> TagItemList { get; set; }
+            //public ObservableCollection<ProductTag> ProductTags { get; set; }
 
             public ProductServiceTag()
             {
-                TagItemList = new List<ProductTag>();
+                TagItemList = new ObservableCollection<ProductTag>();
             }
 
             public void AddTag(ProductTag tag)
@@ -21,9 +23,10 @@ namespace TcTagPrint.Service
                 if (tag == null) return;
 
                 TagItemList.Add(tag);
+                //ProductTags.Add(tag);
             }
 
-            public List<ProductTag> GetTags()
+            public ObservableCollection<ProductTag> GetTags()
             {
                 return TagItemList;
             }

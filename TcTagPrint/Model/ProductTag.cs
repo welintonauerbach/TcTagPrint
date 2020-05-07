@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace TcTagPrint.Model
 {
+    /// <summary>
+    /// Clase da TAG
+    /// </summary>
     public class ProductTag
     {
+        public bool Print { get; set; }
         public string Posicao { get; set; }
         public string Item { get; set; }
         public string Descricao { get; set; }

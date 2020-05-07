@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TcTagPrint.Controller;
+using TcTagPrint.Model;
 using TcTagPrint.Service;
 
 namespace TcTagPrint
@@ -34,21 +37,42 @@ namespace TcTagPrint
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Armazena o caminho do arquivo Xml
+        /// </summary>
+        private string _filePath = @"C:\TEMP\Cópia de TAGS - 450-0071C-20.xml";
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Evento do Botão Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonLoadXml_Click(object sender, RoutedEventArgs e)
         {
-            //var ps = new ProductServiceTag();
+            LoadDataTags();
+            SetTagsListToDatagrid();
+        }
 
-            var print = new PrintServiceTag();
-
-            //print.ReadExcelFile(@"C:\TEMP\TAGS-STRICT.xlsx");
-
-            print.CreateTags(@"C:\TEMP\TAGS-test.xml");
-
+        /// <summary>
+        /// Carrega os dados das Tags do arquivo XML
+        /// </summary>
+        private void LoadDataTags()
+        {
+            TagInstance.GetProductServiceTag().GetTags().Clear();
+            TagInstance.GetFileService().LoadTags(_filePath);
+        }
+        
+        /// <summary>
+        /// Seta a lista de Tags para o DataGrid
+        /// </summary>
+        private void SetTagsListToDatagrid()
+        {
+            DataTags.ItemsSource = TagInstance.GetProductServiceTag().GetTags();
         }
     }
 }

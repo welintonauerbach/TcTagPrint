@@ -73,6 +73,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\TagTemplateFieldNames.cs" />
+    <Compile Include="Service\FileService.cs" />
+    <Compile Include="Controller\TagInstance.cs" />
     <Compile Include="Service\PrintServiceTag.cs" />
     <Compile Include="Service\ProductServiceTag.cs" />
     <Page Include="MainWindow.xaml">
