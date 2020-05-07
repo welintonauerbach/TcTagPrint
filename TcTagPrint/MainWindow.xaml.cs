@@ -16,6 +16,19 @@ using TcTagPrint.Service;
 
 namespace TcTagPrint
 {
+    /*
+        Resumo da lógica para implementação e uso
+
+        O usuário clica em um botão para importar o arquivo XML com os dados das TAGs
+            Na importação será realizado uma validação para garantir a integridade dos dados
+        
+        Os dados importados serão apresentados em um DataGridView
+            No DataGridView o usuário poderá selecionar quais TAGs serão impressas
+        
+        Para imprimir o usuário clicará em um botão IMPRIMIR TAGS
+            Durante a impressão será mostrado uma barra de status o andamento da operação
+            Ao finalizar será mostado Processo Finalizado
+    */
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
