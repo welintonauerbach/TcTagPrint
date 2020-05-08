@@ -27,6 +27,10 @@ namespace TcTagPrint.Service
         {
             try
             {
+                if (string.IsNullOrEmpty(xmlPath))
+                {
+                    return;
+                }
                 var resultFile = LoadXmlFile(xmlPath);
                 if (resultFile != null)
                 {
@@ -143,7 +147,6 @@ namespace TcTagPrint.Service
             {
                 XmlFilePath = openFileDialog.FileName;
             }
-
             return XmlFilePath;
         }
 

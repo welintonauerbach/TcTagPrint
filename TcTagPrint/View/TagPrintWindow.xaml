@@ -9,38 +9,66 @@
         Title="TecniCAD Tag PRINT" Height="600" Width="1250" Icon="/TcTagPrint;component/Resources/tagIcon.png">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="140"></RowDefinition>
+            <!--<RowDefinition Height="50"></RowDefinition>-->
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="25"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
+        <!--<StackPanel Grid.Row="1">
             <Button x:Name="BtnImport" Content="Importar XML" Click="ButtonLoadXml_Click" Margin="10,10,1,1" HorizontalAlignment="Left" Height="30" Width="100" Background="#FF01F517"/>
 
         </StackPanel>
-        <StackPanel Grid.Row="0">
+        <StackPanel Grid.Row="1">
             <Button x:Name="BtnPrint" Content="Imprimir TAGs" Click="ButtonPrintTags_Click" Margin="0,10,10,1" Height="30" Width="100" HorizontalAlignment="Right" Background="#FFFFA200"/>
         </StackPanel>
-        <StackPanel Grid.Row="0">
+        <StackPanel Grid.Row="1">
             <Button x:Name="BtnClearSelection" Content="Limpar Selecionados" Click="ButtonClearSelectedTags_Click" Margin="120,10,1,1" Height="30" Width="120" HorizontalAlignment="Left" Background="#FFFF5656"/>
-        </StackPanel>
+        </StackPanel>-->
+        <Ribbon Grid.Row="0" Visibility="Visible">
+            <Ribbon.QuickAccessToolBar>
+                <RibbonQuickAccessToolBar Visibility="Hidden"></RibbonQuickAccessToolBar>
+            </Ribbon.QuickAccessToolBar>
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed"></RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab Header="Home">
+                <RibbonGroup Header="Arquivo">
+                    <RibbonButton Label="Importar XML"
+                                  Width="90" 
+                                  LargeImageSource="../Resources/xmlFile.png"
+                                  Click="ButtonLoadXml_Click" ></RibbonButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Opções">
+                    <RibbonButton Label="Limpar Seleção"
+                                      Width="90"
+                                      LargeImageSource="../Resources/clearSelection.png"
+                                      Click="ButtonClearSelectedTags_Click"></RibbonButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Impressão">
+                    <RibbonButton Label="Imprimir"
+                                  Width="90"
+                                  LargeImageSource="../Resources/printTag.png"
+                                  Click="ButtonPrintTags_Click"></RibbonButton>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
         <DataGrid Grid.Row="1" Name="DataTags"
-                      
-                      AlternatingRowBackground="Linen"
+                  AlternatingRowBackground="Linen"
                       AutoGenerateColumns="False" 
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto"
-                      CanUserAddRows="False"
+                      CanUserAddRows="False" Margin="0,5,0,0"
                       >
             <DataGrid.Columns>
                 <!--<DataGridCheckBoxColumn Header="Imprimir" Binding="{Binding Path=Print, Mode=TwoWay}"></DataGridCheckBoxColumn>-->
                 <DataGridTemplateColumn Header="Imprimir">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
                             <CheckBox IsChecked="{Binding Print, Mode=TwoWay}" d:DataContext="{d:DesignInstance model:ProductTag}"
                                 Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked">
                             </CheckBox>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Posição" Binding="{Binding Path=Position, Mode=TwoWay}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Item" Binding="{Binding Path=Item, Mode=TwoWay}"></DataGridTextColumn>
