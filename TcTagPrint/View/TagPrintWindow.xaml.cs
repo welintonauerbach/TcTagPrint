@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System.Windows;
 using TcTagPrint.Controller;
+using TcTagPrint.Model;
 
 namespace TcTagPrint.View
 {
@@ -21,14 +23,11 @@ namespace TcTagPrint.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        /// <summary>
-        /// Armazena o caminho do arquivo Xml
-        /// </summary>
-        private string _filePath = @"C:\TEMP\Cópia de TAGS - 450-0071C-20.xml";
-
+        
         public MainWindow()
         {
             InitializeComponent();
+            this.Title = $"TecniCAD TAG PRINT - Ver.: {typeof(MainWindow).Assembly.GetName().Version}";
         }
 
         /// <summary>
@@ -40,6 +39,7 @@ namespace TcTagPrint.View
         {
             LoadDataTags();
             SetTagsListToDatagrid();
+            StatusBarLabel.Content = $"Arquivo XML -> {TagInstance.GetFileService().XmlFilePath}";
         }
 
         /// <summary>
@@ -47,9 +47,9 @@ namespace TcTagPrint.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ButtonPrintTags_Click(object sender, RoutedEventArgs e)
+        private async void ButtonPrintTags_Click(object sender, RoutedEventArgs e)
         {
-            TagInstance.GetPrintServiceTag().Print();
+            await TagInstance.GetPrintServiceTag().Print().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace TcTagPrint.View
         private void LoadDataTags()
         {
             TagInstance.GetProductServiceTag().GetTags().Clear();
-            TagInstance.GetFileService().LoadTags(_filePath);
+            TagInstance.GetFileService().LoadTags(TagInstance.GetFileService().GetXmlFilePath());
         }
         
         /// <summary>
@@ -67,6 +67,50 @@ namespace TcTagPrint.View
         private void SetTagsListToDatagrid()
         {
             DataTags.ItemsSource = TagInstance.GetProductServiceTag().GetTags();
+        }
+
+
+        /// <summary>
+        /// Evento para selecionar um ou mais itens
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
+        {
+            var itens = DataTags.SelectedItems;
+            foreach (ProductTag p in itens)
+            {
+                p.Print = true;
+            }
+        }
+
+        /// <summary>
+        /// Evento para Deselecionar um ou mais itens
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToggleButton_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            var itens = DataTags.SelectedItems;
+
+            
+            foreach (ProductTag p in itens)
+            {
+                p.Print = false;
+            }
+        }
+
+        /// <summary>
+        /// Limpa todas a linhas selecionadas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonClearSelectedTags_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var productTag in TagInstance.GetProductServiceTag().GetTags())
+            {
+                productTag.Print = false;
+            }
         }
     }
 }

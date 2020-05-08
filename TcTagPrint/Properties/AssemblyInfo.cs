@@ -7,12 +7,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TcTagPrint")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TecniCAD TagPrint")]
+[assembly: AssemblyDescription("Sistema para impressão de Tags de Equipamentos")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("TecniCAD")]
 [assembly: AssemblyProduct("TcTagPrint")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright ©  TecniCAD 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -4,28 +4,44 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TcTagPrint"
+        xmlns:model="clr-namespace:TcTagPrint.Model"
         mc:Ignorable="d"
-        Title="TecniCAD Tag PRINT" Height="900" Width="1300">
+        Title="TecniCAD Tag PRINT" Height="600" Width="1250" Icon="/TcTagPrint;component/Resources/tagIcon.png">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
-            <Button x:Name="BtnImport" Content="Importar XML" Click="ButtonLoadXml_Click" Margin="10,5,1,1" HorizontalAlignment="Left" Height="30" Width="100"/>
-        </StackPanel>
+            <Button x:Name="BtnImport" Content="Importar XML" Click="ButtonLoadXml_Click" Margin="10,10,1,1" HorizontalAlignment="Left" Height="30" Width="100" Background="#FF01F517"/>
 
+        </StackPanel>
+        <StackPanel Grid.Row="0">
+            <Button x:Name="BtnPrint" Content="Imprimir TAGs" Click="ButtonPrintTags_Click" Margin="0,10,10,1" Height="30" Width="100" HorizontalAlignment="Right" Background="#FFFFA200"/>
+        </StackPanel>
+        <StackPanel Grid.Row="0">
+            <Button x:Name="BtnClearSelection" Content="Limpar Selecionados" Click="ButtonClearSelectedTags_Click" Margin="120,10,1,1" Height="30" Width="120" HorizontalAlignment="Left" Background="#FFFF5656"/>
+        </StackPanel>
         <DataGrid Grid.Row="1" Name="DataTags"
                       
-                      AlternatingRowBackground="LightGray"
+                      AlternatingRowBackground="Linen"
                       AutoGenerateColumns="False" 
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto"
                       CanUserAddRows="False"
                       >
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="Imprimir" Binding="{Binding Path=Print, Mode=TwoWay}"></DataGridCheckBoxColumn>
+                <!--<DataGridCheckBoxColumn Header="Imprimir" Binding="{Binding Path=Print, Mode=TwoWay}"></DataGridCheckBoxColumn>-->
+                <DataGridTemplateColumn Header="Imprimir">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                            <CheckBox IsChecked="{Binding Print, Mode=TwoWay}" d:DataContext="{d:DesignInstance model:ProductTag}"
+                                Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked">
+                            </CheckBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Posição" Binding="{Binding Path=Position, Mode=TwoWay}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Item" Binding="{Binding Path=Item, Mode=TwoWay}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Descrição" Binding="{Binding Path=Description, Mode=TwoWay}"></DataGridTextColumn>
@@ -33,11 +49,12 @@
                 <DataGridTextColumn Header="Orçamento" Binding="{Binding Path=OrderNumber, Mode=TwoWay}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Nome do Desenho" Binding="{Binding Path=DrawingCodeName, Mode=TwoWay}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Quantidade" Binding="{Binding Path=Quantity, Mode=TwoWay}"></DataGridTextColumn>
+                <DataGridCheckBoxColumn Header="Impresso?" IsReadOnly="True" Binding="{Binding Path=Printed, Mode=OneWay}"></DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
-
         <StackPanel Grid.Row="2">
-            <Button x:Name="BtnPrint" Content="Imprimir TAGs" Click="ButtonPrintTags_Click" Margin="10,5,0,1" Height="30" Width="100" HorizontalAlignment="Left"/>
+            <Label Name="StatusBarLabel" Content="Arquivo:"></Label>
         </StackPanel>
+
     </Grid>
 </Window>

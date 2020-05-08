@@ -8,6 +8,7 @@ namespace TcTagPrint.Model
     public class ProductTag : INotifyPropertyChanged
     {
         private bool _print;
+        private bool _printed;
         private string _position;
         private string _item;
         private string _description;
@@ -24,6 +25,16 @@ namespace TcTagPrint.Model
             {
                 _print = value;
                 OnPropertyChanged("Print");
+            }
+        }
+
+        public bool Printed
+        {
+            get => _printed;
+            set
+            {
+                _printed = value;
+                OnPropertyChanged("Printed");
             }
         }
 

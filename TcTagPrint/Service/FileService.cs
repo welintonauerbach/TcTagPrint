@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using Microsoft.Win32;
 using TcTagPrint.Controller;
 using TcTagPrint.Model;
 
@@ -12,6 +13,10 @@ namespace TcTagPrint.Service
     /// </summary>
     public class FileService
     {
+        /// <summary>
+        /// Endereço do arquivo XML
+        /// </summary>
+        public string XmlFilePath { get; set; }
 
         /// <summary>
         /// Cria a lista de Tags
@@ -109,6 +114,26 @@ namespace TcTagPrint.Service
         {
             var templatePath = $"{Path.GetDirectoryName(Assembly.GetAssembly(typeof(App)).Location)}\\TagTemplate\\TagTemplate.lbx";
             return templatePath;
+        }
+
+        /// <summary>
+        /// Retorna o caminho do arquivo XML Selecionado
+        /// </summary>
+        /// <returns></returns>
+        public string GetXmlFilePath()
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Arquivo XML (*.xml)|*.xml",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
+                Multiselect = false
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                XmlFilePath = openFileDialog.FileName;
+            }
+
+            return XmlFilePath;
         }
     }
 }
