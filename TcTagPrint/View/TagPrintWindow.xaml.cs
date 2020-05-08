@@ -1,23 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using TcTagPrint.Controller;
-using TcTagPrint.Model;
-using TcTagPrint.Service;
 
-namespace TcTagPrint
+namespace TcTagPrint.View
 {
     /*
         Resumo da lógica para implementação e uso
@@ -56,6 +40,16 @@ namespace TcTagPrint
         {
             LoadDataTags();
             SetTagsListToDatagrid();
+        }
+
+        /// <summary>
+        /// Evento do Botão Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonPrintTags_Click(object sender, RoutedEventArgs e)
+        {
+            TagInstance.GetPrintServiceTag().Print();
         }
 
         /// <summary>

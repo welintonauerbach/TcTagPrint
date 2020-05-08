@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Windows;
+using System.IO;
+using System.Reflection;
 using System.Xml;
 using TcTagPrint.Controller;
 using TcTagPrint.Model;
@@ -70,18 +70,18 @@ namespace TcTagPrint.Service
                     try
                     {
                         // Carrega o objeto com os dados do XML
-                        tag.Posicao = node.ChildNodes[0].InnerText;
+                        tag.Position = node.ChildNodes[0].InnerText;
                         tag.Item = node.ChildNodes[1].InnerText;
-                        tag.Descricao = node.ChildNodes[2].InnerText;
+                        tag.Description = node.ChildNodes[2].InnerText;
                         tag.Of = node.ChildNodes[3].InnerText;
-                        tag.Orcamento = node.ChildNodes[4].InnerText;
-                        tag.NomeDesenho = node.ChildNodes[5].InnerText;
+                        tag.OrderNumber = node.ChildNodes[4].InnerText;
+                        tag.DrawingCodeName = node.ChildNodes[5].InnerText;
 
                         // Valida a quantidade
                         var quant = node.ChildNodes[6].InnerText;
                         if (!string.IsNullOrEmpty(quant))
                         {
-                            tag.Quantidade = Convert.ToInt16(quant.Replace(".00", ""));
+                            tag.Quantity = Convert.ToInt16(quant.Replace(".00", ""));
                         }
                     }
                     catch
@@ -99,6 +99,16 @@ namespace TcTagPrint.Service
             {
                 throw new Exception("Erro ao Importar o XML para os objetos",e);
             }
+        }
+
+        /// <summary>
+        /// Local do arquivo de Template de Etiquetas -> .LBX
+        /// </summary>
+        /// <returns></returns>
+        public string TemplatePath()
+        {
+            var templatePath = $"{Path.GetDirectoryName(Assembly.GetAssembly(typeof(App)).Location)}\\TagTemplate\\TagTemplate.lbx";
+            return templatePath;
         }
     }
 }

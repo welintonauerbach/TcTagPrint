@@ -1,8 +1,7 @@
 ﻿<Application x:Class="TcTagPrint.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TcTagPrint"
-             StartupUri="MainWindow.xaml">
+             StartupUri="View/TagPrintWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>
