@@ -25,14 +25,13 @@ namespace TcTagPrint.Service
         {
             try
             {
-                //var printer = new PrinterClass();
-                //if (!printer.IsPrinterOnline("Engenharia_Etiquetas"))
+                var docClass = new DocumentClass();
+               
+                //if (!docClass.Printer.IsPrinterOnline("Engenharia_Etiquetas"))
                 //{
-                //    MessageBox.Show("A impressora não está Online, verifique se ela está ligada!","Impressora OFF-LINE");
+                //    MessageBox.Show("A impressora não está Online, verifique se ela está ligada!", "Impressora OFF-LINE");
                 //    return;
                 //}
-
-                var docClass = new DocumentClass();
 
                 if (docClass.Open(TagInstance.GetFileService().TemplatePath()))
                 {
@@ -49,7 +48,7 @@ namespace TcTagPrint.Service
                         docClass.GetObject(TagTemplateFieldNames.TagData).Text = DateTime.Now.ToString("MM/dd/yyyy") ?? string.Empty;
 
                         docClass.StartPrint(string.Empty, PrintOptionConstants.bpoDefault);
-                        docClass.PrintOut(productTag.Quantity, PrintOptionConstants.bpoDefault);
+                        docClass.PrintOut(productTag.Quantity, PrintOptionConstants.bpoHalfCut);
                         productTag.Printed = docClass.EndPrint();
                     }
                     docClass.Close();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Windows;
 using System.Xml;
 using Microsoft.Win32;
 using TcTagPrint.Controller;
@@ -26,14 +27,18 @@ namespace TcTagPrint.Service
         {
             try
             {
-                LoadList(LoadXmlFile(xmlPath));
+                var resultFile = LoadXmlFile(xmlPath);
+                if (resultFile != null)
+                {
+                    LoadList(resultFile);
+                }
             }
             catch (Exception e)
             {
-                throw new Exception("Erro ao carregar as Tags",e);
+                throw new Exception("Erro ao carregar as Tags", e);
             }
         }
-        
+
         /// <summary>
         /// Carrega o arquivo XML
         /// </summary>
@@ -43,8 +48,14 @@ namespace TcTagPrint.Service
         {
             try
             {
-                var xmlDoc = new XmlDocument();
+                FileInfo info = new FileInfo(xmlPath);
+                if (IsFileLocked(info))
+                {
+                    MessageBox.Show("O arquivo selecionado está em uso", "Arquivo em Uso");
+                    return null;
+                }
 
+                var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
 
                 return xmlDoc;
@@ -102,7 +113,7 @@ namespace TcTagPrint.Service
             }
             catch (Exception e)
             {
-                throw new Exception("Erro ao Importar o XML para os objetos",e);
+                throw new Exception("Erro ao Importar o XML para os objetos", e);
             }
         }
 
@@ -134,6 +145,37 @@ namespace TcTagPrint.Service
             }
 
             return XmlFilePath;
+        }
+
+        /// <summary>
+        /// Verifica se o arquivo está disponível
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        private bool IsFileLocked(FileInfo file)
+        {
+            FileStream stream = null;
+
+            try
+            {
+                stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            }
+            catch (IOException)
+            {
+                //o arquivo está indiposnível pelas seguintes causas:
+                //está sendo escrito
+                //utilizado por uma outra thread
+                //não existe ou sendo criado
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //arquivo está disponível
+            return false;
         }
     }
 }
